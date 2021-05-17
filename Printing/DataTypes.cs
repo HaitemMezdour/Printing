@@ -8,7 +8,7 @@ namespace Printing
 {
  public enum PrintStatus
     {
-        SUCESS,
+        SUCESS_2,
         FAILED
     };
 }
