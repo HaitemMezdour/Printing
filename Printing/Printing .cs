@@ -4,27 +4,37 @@ using System.Net.Sockets;
 using System.IO;
 using System.Collections;
 
+
 namespace Printing
 {
-    public class Printing 
+    public class Printer
     {
-        public Printing(string IpAdress,Int32 Port,string Path)
+        private static string _IpAdress  { get; set; }
+        private static Int32 _Port { get; set; }
+        static readonly IPAddress IpAddress = IPAddress.Parse(_IpAdress);
+        static readonly IPEndPoint endpoint = new(IpAddress, _Port);
+        static readonly Socket socket = new(endpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+        
+        
+        
+        
+
+        public Printer()
         {
-            IPAddress IpAddress = IPAddress.Parse(IpAdress);
-            ESC CMD = new ESC();
-            var endpoint = new IPEndPoint(IpAddress, Port);
-
-            var socket = new Socket(endpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
             socket.Connect(endpoint);
 
-            var buffer = new ArrayList();
 
-            var networkStream = new NetworkStream(socket, true);
+        }
+        public PrintStatus DoPrntiJob(string  Path)
+        {
+             ESC CMD = new ESC();
+             PrintStatus status=0;
+             var buffer = new ArrayList();
+             NetworkStream networkStream = new NetworkStream(socket, true);
             try
             {
                 //Créez une instance de StreamReader pour lire à partir d'un fichier
-                using (StreamReader sr = new StreamReader(Path    ))
+                using (StreamReader sr = new StreamReader(Path))
                 {
                     string line;
                     // Lire les lignes du fichier jusqu'à la fin.
@@ -53,10 +63,9 @@ namespace Printing
                 Console.WriteLine("Le fichier n'a pas pu être lu.");
                 Console.WriteLine(e.Message);
             }
-
+            return status;
         }
 
-
-
+        
     }
 }
